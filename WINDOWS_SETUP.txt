@@ -1,0 +1,86 @@
+WINDOWS SETUP - Building Pico Firmware from Scratch
+=====================================================
+
+Everything you need to go from zero to a working .uf2 file on Windows.
+
+
+STEP 1 - Install MSYS2
+-----------------------
+MSYS2 gives you a Linux-like shell (bash, make, git, python) on Windows.
+
+  1. Download the installer from:  https://www.msys2.org
+  2. Run it — default install location (C:\msys64) is fine.
+  3. When it finishes, open the  "MSYS2 UCRT64"  terminal from the Start menu.
+     (Use UCRT64, not the plain MSYS2 or MINGW64 terminals.)
+
+
+STEP 2 - Install the ARM toolchain and build tools
+---------------------------------------------------
+In the MSYS2 UCRT64 terminal, paste each line and press Enter:
+
+  pacman -Syu
+  (Close and reopen the terminal if it asks you to, then continue.)
+
+  pacman -S mingw-w64-ucrt-x86_64-arm-none-eabi-toolchain
+  pacman -S mingw-w64-ucrt-x86_64-cmake
+  pacman -S mingw-w64-ucrt-x86_64-gcc
+  pacman -S mingw-w64-ucrt-x86_64-python
+  pacman -S make git
+
+Each command will ask "Proceed with installation?" — press Enter to confirm.
+
+
+STEP 3 - Get the project
+------------------------
+In the MSYS2 UCRT64 terminal:
+
+  git clone <URL of this project>
+  cd <project folder name>
+
+
+STEP 4 - Build picotool (do this once)
+---------------------------------------
+picotool converts the compiled firmware into the .uf2 format the Pico needs.
+
+  cd build_picotool
+  bash build_picotool.sh
+  cd ..
+
+This downloads, compiles, and installs picotool automatically.
+It only needs to be run once — not every time you build firmware.
+
+
+STEP 5 - Build the firmware
+----------------------------
+From the project root folder:
+
+  make
+
+The finished file will be:  build/final.uf2
+
+
+STEP 6 - Flash to the Raspberry Pi Pico
+-----------------------------------------
+  1. Hold the BOOTSEL button on the Pico.
+  2. While holding it, plug the Pico into your PC via USB.
+  3. It will appear as a USB drive called "RPI-RP2".
+  4. Drag and drop  build/final.uf2  onto that drive.
+  5. The Pico will reboot automatically and run your code.
+
+
+TROUBLESHOOTING
+---------------
+"command not found" errors
+  -> Make sure you are in the MSYS2 UCRT64 terminal, not CMD or PowerShell.
+
+pacman asks to close the terminal during update
+  -> Close and reopen it, then re-run the pacman install commands.
+
+cmake can't find a compiler
+  -> Make sure you installed mingw-w64-ucrt-x86_64-gcc (Step 2).
+
+Git clone fails
+  -> Check your internet connection and that git is installed (Step 2).
+
+"picotool not found" when running make
+  -> Run Step 4 (build_picotool.sh) first.

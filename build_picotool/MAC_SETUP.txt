@@ -1,0 +1,91 @@
+MAC SETUP - Building Pico Firmware from Scratch
+================================================
+
+Everything you need to go from zero to a working .uf2 file on a Mac.
+
+
+STEP 1 - Install Xcode Command Line Tools
+------------------------------------------
+This gives you bash, make, git, and a C++ compiler.
+Open Terminal and run:
+
+  xcode-select --install
+
+A dialog will pop up — click Install and wait for it to finish.
+
+
+STEP 2 - Install Homebrew
+--------------------------
+Homebrew is the package manager for Mac, similar to apt on Linux.
+In Terminal, run the single command from:  https://brew.sh
+
+It will look like:
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+Follow the prompts. At the end it may ask you to run one or two
+"Next steps" commands to add brew to your PATH — do those too.
+
+
+STEP 3 - Install the ARM toolchain and build tools
+----------------------------------------------------
+In Terminal:
+
+  brew install cmake
+  brew install python3
+  brew install arm-none-eabi-gcc
+
+arm-none-eabi-gcc is the cross-compiler that builds code for the Pico's
+ARM Cortex-M0+ processor. The install takes a few minutes.
+
+
+STEP 4 - Get the project
+-------------------------
+In Terminal:
+
+  git clone <URL of this project>
+  cd <project folder name>
+
+
+STEP 5 - Build picotool (do this once)
+----------------------------------------
+picotool converts the compiled firmware into the .uf2 format the Pico needs.
+
+  bash build_picotool/build_picotool.sh
+
+This downloads, compiles, and installs picotool automatically.
+Only needs to be done once.
+
+
+STEP 6 - Build the firmware
+-----------------------------
+From the project root folder:
+
+  bash build_all.sh
+
+The finished file will be:  build/final.uf2
+
+
+STEP 7 - Flash to the Raspberry Pi Pico
+-----------------------------------------
+  1. Hold the BOOTSEL button on the Pico.
+  2. While holding it, plug the Pico into your Mac via USB.
+  3. It will appear as a drive called "RPI-RP2" on your desktop.
+  4. Drag and drop  build/final.uf2  onto that drive.
+  5. The Pico will reboot automatically and run your code.
+
+
+TROUBLESHOOTING
+---------------
+"brew: command not found"
+  -> Close and reopen Terminal after installing Homebrew, or follow
+     the "Next steps" it printed at the end of the install.
+
+"arm-none-eabi-gcc: command not found" after brew install
+  -> Run:  brew link arm-none-eabi-gcc
+  -> Or close and reopen Terminal so PATH is refreshed.
+
+"cmake not found" when running build_picotool.sh
+  -> Run:  brew install cmake
+
+picotool build fails with compiler errors
+  -> Make sure Step 1 (xcode-select --install) completed fully.

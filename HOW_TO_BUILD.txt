@@ -1,0 +1,167 @@
+HOW TO BUILD — RP2040 Pico Bare-Metal Project
+==============================================
+
+This file covers setup and build instructions for every supported platform.
+Keep it with the project so you always have the steps handy.
+
+
+PROJECT LAYOUT
+--------------
+  HOW_TO_BUILD.txt        <- this file
+  build_all.sh            <- builds everything (Linux / Mac / Windows MSYS2)
+  makefile                <- root makefile (also has "make gentoo" target)
+  bootloader/             <- boot stage 2 source and build files
+  firmware/               <- main firmware source and build files
+  build_picotool/         <- scripts to build picotool from source
+    build_picotool.sh     <- run this once before your first build
+    WINDOWS_SETUP.txt     <- detailed Windows guide
+    MAC_SETUP.txt         <- detailed Mac guide
+
+
+WHAT YOU NEED TO BUILD (all platforms)
+---------------------------------------
+  1. ARM cross-compiler   arm-none-eabi-gcc  (see platform sections below)
+  2. cmake                to build picotool
+  3. python3              to run pad_checksum.py (adds boot2 CRC)
+  4. make                 to run the Makefiles
+  5. git                  to clone picotool source
+  6. picotool             built once by build_picotool/build_picotool.sh
+
+
+===========================================================================
+PLATFORM: RASPBERRY PI OS / DEBIAN / UBUNTU (your Pi 400)
+===========================================================================
+
+ONE-TIME SETUP
+--------------
+  sudo apt install gcc-arm-none-eabi cmake build-essential git
+  cd /path/to/universal_build_pico
+  bash build_picotool/build_picotool.sh
+
+To verify the ARM toolchain installed correctly:
+  arm-none-eabi-gcc --version
+
+BUILD (run this every time you change code)
+-------------------------------------------
+  cd /path/to/universal_build_pico
+  bash build_all.sh
+
+Output: build/final.uf2
+
+
+===========================================================================
+PLATFORM: GENTOO LINUX
+===========================================================================
+
+ONE-TIME SETUP (run as root)
+-----------------------------
+  emerge sys-devel/crossdev
+  crossdev -t arm-none-eabi        <- builds the ARM toolchain from source
+                                      this takes a while the first time
+  emerge dev-build/cmake dev-vcs/git
+
+ONE-TIME SETUP (as your normal user)
+-------------------------------------
+  cd /path/to/universal_build_pico
+  bash build_picotool/build_picotool.sh
+
+SHARED BUILD RULES
+------------------
+  All platforms now use the root makefile, which disables build-id sections.
+  Makefile.gentoo files are compatibility wrappers; make gentoo equals make.
+
+BUILD (run this every time you change code)
+-------------------------------------------
+  cd /path/to/universal_build_pico
+  make gentoo
+
+Output: build/final.uf2
+
+CLEAN
+-----
+  make gentoo-clean
+
+
+===========================================================================
+PLATFORM: WINDOWS (via MSYS2)
+===========================================================================
+See build_picotool/WINDOWS_SETUP.txt for the full step-by-step guide.
+Summary below.
+
+ONE-TIME SETUP
+--------------
+  1. Download and install MSYS2 from: https://www.msys2.org
+  2. Open the "MSYS2 UCRT64" terminal (not CMD or PowerShell)
+  3. Run these commands:
+
+       pacman -Syu
+       (close and reopen the terminal if asked, then continue)
+
+       pacman -S mingw-w64-ucrt-x86_64-arm-none-eabi-toolchain
+       pacman -S mingw-w64-ucrt-x86_64-cmake
+       pacman -S mingw-w64-ucrt-x86_64-gcc
+       pacman -S mingw-w64-ucrt-x86_64-python
+       pacman -S make git
+
+  4. In the MSYS2 UCRT64 terminal, go to the project folder and run:
+
+       bash build_picotool/build_picotool.sh
+
+IMPORTANT: Always use the MSYS2 UCRT64 terminal for all build steps.
+           Do not use regular Command Prompt or PowerShell.
+
+BUILD (run this every time you change code)
+-------------------------------------------
+  bash build_all.sh
+
+Output: build/final.uf2
+
+
+===========================================================================
+PLATFORM: MAC
+===========================================================================
+See build_picotool/MAC_SETUP.txt for the full step-by-step guide.
+Summary below.
+
+ONE-TIME SETUP
+--------------
+  xcode-select --install
+  (install Homebrew from https://brew.sh, then:)
+  brew install cmake python3 arm-none-eabi-gcc
+  cd /path/to/universal_build_pico
+  bash build_picotool/build_picotool.sh
+
+BUILD (run this every time you change code)
+-------------------------------------------
+  cd /path/to/universal_build_pico
+  bash build_all.sh
+
+Output: build/final.uf2
+
+
+===========================================================================
+FLASHING THE PICO (all platforms)
+===========================================================================
+
+  1. Hold the BOOTSEL button on the Pico.
+  2. While holding it, plug the Pico into your computer via USB.
+  3. It appears as a USB drive called "RPI-RP2".
+  4. Copy build/final.uf2 onto that drive.
+     - Linux:   cp build/final.uf2 /media/$USER/RPI-RP2/
+     - Mac:     cp build/final.uf2 /Volumes/RPI-RP2/
+     - Windows: drag and drop in File Explorer
+  5. The Pico reboots automatically and runs your code.
+
+
+===========================================================================
+QUICK REFERENCE — DAY TO DAY
+===========================================================================
+
+  Platform          Build command           One-time setup done?
+  ----------------  ----------------------  --------------------
+  Pi / Linux        bash build_all.sh       apt install + build_picotool.sh
+  Gentoo            make gentoo             crossdev + build_picotool.sh
+  Windows (MSYS2)   bash build_all.sh       pacman installs + build_picotool.sh
+  Mac               bash build_all.sh       brew installs + build_picotool.sh
+
+The output is always:  build/final.uf2

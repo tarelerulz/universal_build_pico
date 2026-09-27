@@ -1,0 +1,71 @@
+This project's original work is the blink code (firmware/assembly.s) and
+the build makefiles. The remaining files below are third-party — either
+taken directly from, or built from, other people's repositories — and are
+credited here rather than presented as original.
+
+==========================================================================
+1. Raspberry Pi Pico SDK (Raspberry Pi (Trading) Ltd.), BSD-3-Clause
+==========================================================================
+
+Files covered:
+  bootloader/boot2_w25q080.S               (verbatim copy)
+  bootloader/boot2_w25q080_annotated.S     (derivative — original code with
+                                             added commentary)
+  bootloader/official_preprocessed_boot2.S (preprocessor output of the SDK
+                                             source; only the local path in
+                                             its "# line" markers was
+                                             shortened)
+  bootloader/boot_stage2.ld                (verbatim copy)
+  firmware/boot_stage2.ld                  (verbatim copy)
+
+Source: https://github.com/raspberrypi/pico-sdk
+        src/rp2040/boot_stage2/, src/rp2_common/boot_stage2/
+
+Copyright (c) 2019-2021 Raspberry Pi (Trading) Ltd.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+   this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+==========================================================================
+2. "Life with David" — RaspberryPiPico-BareMetalAdventures, Chapter 04
+==========================================================================
+
+Files covered:
+  firmware/vector_table_BMA04.S   (derivative: symbolic reset/default handlers
+                                    replace hardcoded addresses)
+  firmware/BMA04_ls.ld            (derivative: stack symbol, layout assertions
+                                    and explicit text placement added)
+  bootloader/pad_checksum.py      (verbatim copy, attribution header added)
+
+Source: https://github.com/LifeWithDavid/RaspberryPiPico-BareMetalAdventures
+        Chapter 04
+YouTube: "Life with David" — RP2040 bare-metal assembly series (BMA)
+
+No formal license file is present in that repository. Its README states:
+"Use the contents of these files for your experiments in bare metal
+programming for the RP2040." These files are included here on that basis,
+with attribution, as part of the author's own learning project that
+followed the "Life with David" series.
